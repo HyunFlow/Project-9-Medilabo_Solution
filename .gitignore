@@ -1,0 +1,11 @@
+# Default ignored files
+.idea/*
+*.jar
+*.class
+*.war
+
+/target/
+/build/
+
+.env
+/.env/
