@@ -14,6 +14,7 @@ public record PatientDTO(
     @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate dateOfBirth,
     Gender gender,
+    @NotBlank
     String address,
     String zipCode,
     String phone,
