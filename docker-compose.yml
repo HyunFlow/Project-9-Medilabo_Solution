@@ -25,5 +25,16 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
+  gateway-service:
+    image: gateway-service:0.0.1
+    container_name: gateway-service-container
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_APPLICATION_NAME: gateway-service
+    depends_on:
+      - patient-service
+
 volumes:
   postgres:
