@@ -1,0 +1,80 @@
+package com.openclassrooms.frontendservice.proxy;
+
+import com.openclassrooms.frontendservice.configuration.GatewayProperties;
+import com.openclassrooms.frontendservice.dto.PatientDTO;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+
+@Component
+public class PatientProxy {
+
+    private final GatewayProperties routes;
+    private final RestTemplate restTemplate;
+    private final HttpHeaders headers = new HttpHeaders() {{
+        setContentType(MediaType.APPLICATION_JSON);
+    }};
+
+    public PatientProxy(RestTemplate restTemplate, GatewayProperties routes) {
+        this.restTemplate = restTemplate;
+        this.routes = routes;
+    }
+
+    public List<PatientDTO> getAllPatients() {
+        ResponseEntity<List<PatientDTO>> response = restTemplate.exchange(
+                routes.getAllPatientsUri(),
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<PatientDTO>>() {}
+        );
+        return response.getBody();
+    }
+
+    public PatientDTO getPatientById(Integer id) {
+        ResponseEntity<PatientDTO> response = restTemplate.exchange(
+                routes.getPatientUri()+"/"+id,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<PatientDTO>() {}
+        );
+        return response.getBody();
+    }
+
+    public PatientDTO createPatient(PatientDTO patientDTO) {
+        HttpEntity<PatientDTO> requestEntity = new HttpEntity<>(patientDTO, headers);
+
+        ResponseEntity<PatientDTO> response = restTemplate.exchange(
+                routes.getPatientCreationUri(),
+                HttpMethod.POST,
+                requestEntity,
+                new ParameterizedTypeReference<PatientDTO>() {}
+        );
+        return response.getBody();
+    }
+
+    public PatientDTO updatePatient(PatientDTO patientDTO, Integer id) {
+        HttpEntity<PatientDTO> requestEntity = new HttpEntity<>(patientDTO, headers);
+
+        ResponseEntity<PatientDTO> response = restTemplate.exchange(
+                routes.getPatientUpdateUri()+"/"+id,
+                HttpMethod.PUT,
+                requestEntity,
+                new ParameterizedTypeReference<PatientDTO>() {}
+        );
+        return response.getBody();
+    }
+
+    public Boolean deletePatient(Integer id) {
+        ResponseEntity<Boolean> response = restTemplate.exchange(
+                routes.getPatientDeleteUri()+"/"+id,
+                HttpMethod.DELETE,
+                null,
+                new ParameterizedTypeReference<>() {}
+        );
+        return response.getBody();
+    }
+
+}

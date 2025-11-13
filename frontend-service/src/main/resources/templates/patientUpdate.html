@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ENG">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Medilabo</title>
+    <link rel="stylesheet" type="text/css" href="../../webjars/bootstrap/5.2.3/css/bootstrap.min.css"/>
+</head>
+<main class="container">
+    <h1>UPDATE PATIENT</h1><br>
+    <div class="card">
+        <form th:action="@{/patients/update}" method="post" enctype="multipart/form-data" th:object="${patient}" style="margin: 10px 50px 10px;">
+
+            <input type="hidden" name="_method" value="put" />
+
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="p-3">
+                <div class="form-group row">
+                    <label class="col-2 col-form-label" for="firstName">First Name</label>
+                    <div class="col-10">
+                        <input type="text" th:field="*{firstName}" required minlength="2" maxlength="256" class="form-control"
+                               id="firstName" />
+                        <p class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label" for="lastName">Last Name</label>
+                    <div class="col-10">
+                        <input type="text" th:field="*{lastName}" required minlength="2" maxlength="256" class="form-control"
+                               id="lastName" />
+                        <p class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label" for="dateOfBirth">Date of Birth</label>
+                    <div class="col-10">
+                        <input type="date" step="1" th:field="*{dateOfBirth}" required
+                               class="form-control" id="dateOfBirth" />
+                        <p class="text-danger" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></p>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label class="col-2 form-check-label" for="gender">Gender</label>
+                    <div class="col-10">
+                        <input type="text" th:field="*{gender}" required pattern="M|F"
+                               class="form-control" id="gender" />
+                        <p class="text-danger" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></p>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label class="col-2 form-check-label" for="address">Address</label>
+                    <div class="col-10">
+                        <input type="text" th:field="*{address}" required
+                               class="form-control" id="address" />
+                        <p class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></p>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label class="col-2 form-check-label" for="phone">Phone Number</label>
+                    <div class="col-10">
+                        <input type="text" th:field="*{phone}" required
+                               class="form-control" id="phone" />
+                        <p class="text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label class="col-2 form-check-label" for="zipCode">Zip Code</label>
+                    <div class="col-10">
+                        <input type="text" th:field="*{zipCode}" class="form-control" id="zipCode"/>
+                        <p class="text-danger" th:if="${#fields.hasErrors('zipCode')}" th:errors="*{zipCode}"></p>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label class="col-2 form-check-label" for="height">Height (cm)</label>
+                    <div class="col-10">
+                        <input type="number" th:field="*{height}" class="form-control" id="height"/>
+                        <p class="text-danger" th:if="${#fields.hasErrors('height')}" th:errors="*{height}"></p>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label class="col-2 form-check-label" for="weight">Weight (kg)</label>
+                    <div class="col-10">
+                        <input type="number" th:field="*{weight}" class="form-control" id="weight"/>
+                        <p class="text-danger" th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}"></p>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label class="col-2 form-check-label" for="smoker">Smoker</label>
+                    <div class="col-10">
+                        <input type="checkbox" th:field="*{smoker}" class="form-check-input" id="smoker"/>
+                        <p class="text-danger" th:if="${#fields.hasErrors('smoker')}" th:errors="*{smoker}"></p>
+                    </div>
+                </div>
+                <br>
+                <div class="d-flex flex-row-reverse">
+                    <a th:href="@{/patients/view(id=${patient.id})}" class="btn btn-danger">Cancel</a>
+                    <input type="submit" value="Save" class="btn btn-primary me-2" />
+                </div>
+            </div>
+        </form>
+
+        <div th:if="${message}" class="d-flex justify-content-left col-sm-10 mb-3">
+            <p class="text-success" th:text="${message}"></p>
+        </div>
+        <div th:if="${error}" class="d-flex justify-content-left col-sm-10 mb-3">
+            <p class="text-success" th:text="${error}"></p>
+        </div>
+    </div>
+</main>
+</html>
