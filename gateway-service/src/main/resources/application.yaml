@@ -6,8 +6,10 @@ spring:
     name: gateway-service
   cloud:
     gateway:
-      routes:
-        - id: patient-service-route
-          uri: http://patient-service-container:8090
-          predicates:
-            - Path=/patient-service/**
+      server:
+        webflux:
+          routes:
+            - id: patient-service-route
+              uri: http://patient-service-container:8090
+              predicates:
+                - Path=/patient-service/**
