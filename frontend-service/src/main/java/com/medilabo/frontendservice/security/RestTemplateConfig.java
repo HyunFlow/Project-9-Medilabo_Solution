@@ -1,4 +1,4 @@
-package com.openclassrooms.frontendservice.security;
+package com.medilabo.frontendservice.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

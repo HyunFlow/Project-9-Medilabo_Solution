@@ -1,4 +1,4 @@
-package com.openclassrooms.frontendservice;
+package com.medilabo.frontendservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.openclassrooms.frontendservice.constant;
+package com.medilabo.frontendservice.constant;
 
 public interface MessageConstant {
     String MESSAGE_ATTRIBUTE = "message";

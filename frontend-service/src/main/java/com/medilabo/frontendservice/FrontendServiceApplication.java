@@ -1,4 +1,4 @@
-package com.openclassrooms.frontendservice;
+package com.medilabo.frontendservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

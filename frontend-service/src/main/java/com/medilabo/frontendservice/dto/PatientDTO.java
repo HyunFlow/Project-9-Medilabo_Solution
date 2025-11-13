@@ -1,4 +1,4 @@
-package com.openclassrooms.frontendservice.dto;
+package com.medilabo.frontendservice.dto;
 
 import java.time.LocalDate;
 

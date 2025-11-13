@@ -1,4 +1,4 @@
-package com.openclassrooms.frontendservice.configuration;
+package com.medilabo.frontendservice.configuration;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

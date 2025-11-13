@@ -1,7 +1,7 @@
-package com.openclassrooms.frontendservice.proxy;
+package com.medilabo.frontendservice.proxy;
 
-import com.openclassrooms.frontendservice.configuration.GatewayProperties;
-import com.openclassrooms.frontendservice.dto.PatientDTO;
+import com.medilabo.frontendservice.configuration.GatewayProperties;
+import com.medilabo.frontendservice.dto.PatientDTO;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;

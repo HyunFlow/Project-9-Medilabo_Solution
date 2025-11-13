@@ -1,6 +1,6 @@
-package com.openclassrooms.frontendservice.controller;
-import com.openclassrooms.frontendservice.dto.PatientDTO;
-import com.openclassrooms.frontendservice.service.PatientService;
+package com.medilabo.frontendservice.controller;
+import com.medilabo.frontendservice.dto.PatientDTO;
+import com.medilabo.frontendservice.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.openclassrooms.frontendservice.constant.ErrorConstant.*;
-import static com.openclassrooms.frontendservice.constant.MessageConstant.*;
+import static com.medilabo.frontendservice.constant.ErrorConstant.*;
+import static com.medilabo.frontendservice.constant.MessageConstant.*;
 
 @Controller
 @Slf4j

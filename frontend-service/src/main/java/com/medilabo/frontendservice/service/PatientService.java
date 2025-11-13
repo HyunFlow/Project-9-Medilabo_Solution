@@ -1,7 +1,7 @@
-package com.openclassrooms.frontendservice.service;
+package com.medilabo.frontendservice.service;
 
-import com.openclassrooms.frontendservice.dto.PatientDTO;
-import com.openclassrooms.frontendservice.proxy.PatientProxy;
+import com.medilabo.frontendservice.dto.PatientDTO;
+import com.medilabo.frontendservice.proxy.PatientProxy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
