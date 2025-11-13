@@ -1,6 +1,6 @@
-package com.openclassrooms.patientservice.repository;
+package com.medilabo.patientservice.repository;
 
-import com.openclassrooms.patientservice.model.Patient;
+import com.medilabo.patientservice.model.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

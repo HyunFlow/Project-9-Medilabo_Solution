@@ -1,7 +1,7 @@
-package com.openclassrooms.patientservice.controller;
+package com.medilabo.patientservice.controller;
 
-import com.openclassrooms.patientservice.dto.PatientDTO;
-import com.openclassrooms.patientservice.service.PatientInfoService;
+import com.medilabo.patientservice.dto.PatientDTO;
+import com.medilabo.patientservice.service.PatientInfoService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

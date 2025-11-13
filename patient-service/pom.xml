@@ -9,7 +9,7 @@
     <version>3.5.7</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
-  <groupId>com.openclassrooms</groupId>
+  <groupId>com.medilabo</groupId>
   <artifactId>patient-service</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>patient-service</name>

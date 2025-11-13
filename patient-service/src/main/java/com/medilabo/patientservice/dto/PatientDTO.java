@@ -1,7 +1,7 @@
-package com.openclassrooms.patientservice.dto;
+package com.medilabo.patientservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.openclassrooms.patientservice.model.Gender;
+import com.medilabo.patientservice.model.Gender;
 import java.time.LocalDate;
 import jakarta.validation.constraints.*;
 

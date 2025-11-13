@@ -1,4 +1,4 @@
-package com.openclassrooms.patientservice.model;
+package com.medilabo.patientservice.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

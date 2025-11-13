@@ -1,8 +1,8 @@
-package com.openclassrooms.patientservice.service;
+package com.medilabo.patientservice.service;
 
-import com.openclassrooms.patientservice.dto.PatientDTO;
-import com.openclassrooms.patientservice.model.Patient;
-import com.openclassrooms.patientservice.repository.PatientRepository;
+import com.medilabo.patientservice.dto.PatientDTO;
+import com.medilabo.patientservice.model.Patient;
+import com.medilabo.patientservice.repository.PatientRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;

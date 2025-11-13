@@ -1,4 +1,4 @@
-package com.openclassrooms.patientservice.model;
+package com.medilabo.patientservice.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
