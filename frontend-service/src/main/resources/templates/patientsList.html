@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Patients</title>
+    <link rel="stylesheet" type="text/css" href="../../webjars/bootstrap/5.2.3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+
+</head>
+
+<body class="container-sm text-center">
+<nav class="d-flex justify-content-between align-items-center mx-4 p-4">
+    <div class="d-flex align-items-center">
+        <img th:src="@{/img/logoSmall.png}" />
+        <a href="/home" class="btn btn-outline-info btn-sm me-2">Home</a>
+        <a th:href="@{/patients}" class="btn btn-outline-info btn-sm">Patients</a>
+    </div>
+    <a href="/logout" class="btn btn-outline-info btn-sm">Logout</a>
+</nav>
+
+<section class="container-sm text-center">
+
+    <div class="mx-4 p-4">
+        <h1>List of patients</h1>
+    </div>
+
+    <div class="mx-4 p-4">
+        <a href="/patients/create" class="btn btn-outline-info btn-lg">New Patient</a>
+    </div>
+
+    <div class="mx-4 p-4">
+        <table class="table table-info table-striped">
+            <thead>
+            <tr>
+                <th scope="col">First name</th>
+                <th scope="col">Last name</th>
+                <th scope="col">Date of birth</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Address</th>
+                <th scope="col">Phone number</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="patient : ${patients}" th:attr="data-href=@{/patients/view(id=${patient.id})}">
+                <td th:text="${patient.firstName}"></td>
+                <td th:text="${patient.lastName}"></td>
+                <td th:text="${patient.dateOfBirth}"></td>
+                <td th:text="${patient.gender}"></td>
+                <td th:text="${patient.address}"></td>
+                <td th:text="${patient.phone}"></td>
+                <td>
+                    <a th:href="@{/patients/view(id=${patient.id})}">View</a>
+                    <a th:href="@{/patients/update(id=${patient.id})}">Edit</a>
+                    <a th:href="@{/patients/delete(id=${patient.id})}">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div th:if="${message}" class="d-flex justify-content-left col-sm-10 mb-3">
+        <p class="text-success" th:text="${message}"></p>
+    </div>
+    <div th:if="${error}" class="d-flex justify-content-left col-sm-10 mb-3">
+        <p class="text-danger" th:text="${error}"></p>
+    </div>
+
+</section>
+
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var rows = document.querySelectorAll('.table tbody tr');
+        rows.forEach(function(row) {
+            row.addEventListener('click', function() {
+                window.location = this.getAttribute('data-href');
+            });
+        });
+    });
+</script>
+
+</html>
