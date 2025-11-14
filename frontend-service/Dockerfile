@@ -12,9 +12,8 @@ FROM eclipse-temurin:21-alpine
 WORKDIR /app
 
 RUN apk add --no-cache curl
-
-COPY --from=build /app/target/authentication-service-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/frontend-service-0.0.1-SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
-EXPOSE 8085
+EXPOSE 8082

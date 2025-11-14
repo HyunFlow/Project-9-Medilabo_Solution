@@ -18,16 +18,34 @@ public class RunnerConfig implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
-    /*
-    Setup in-memory users, hors scope of project applications
-    */
+//    /*
+//    Setup in-memory users, hors scope of project applications
+//    */
+//
+//    @Override
+//    public void run(String... args) {
+//        UserCredential user = new UserCredential("user", encoder.encode("user"), true);
+//        UserCredential admin = new UserCredential("admin", encoder.encode("admin"), true);
+//        UserCredential evicted = new UserCredential("evicted", encoder.encode("evicted"), false);
+//        userRepository.saveAll(List.of(user, admin, evicted));
+//        log.info("in-memory users initialized - OK");
+//    }
 
+    /*
+    Setup postgresql default users, hors scope of project applications
+    */
     @Override
     public void run(String... args) {
-        UserCredential user = new UserCredential("user", encoder.encode("user"), true);
-        UserCredential admin = new UserCredential("admin", encoder.encode("admin"), true);
-        UserCredential evicted = new UserCredential("evicted", encoder.encode("evicted"), false);
-        userRepository.saveAll(List.of(user, admin, evicted));
-        log.info("in-memory users initialized - OK");
+
+        if (userRepository.findByUsername("admin").isEmpty()) {
+            UserCredential user = new UserCredential("user", encoder.encode("user"), true);
+            UserCredential admin = new UserCredential("admin", encoder.encode("admin"), true);
+            UserCredential evicted = new UserCredential("evicted", encoder.encode("evicted"), false);
+
+            userRepository.saveAll(List.of(user, admin, evicted));
+            log.info("Default users initialized - OK");
+        } else {
+            log.info("Default users already exist. Skipping initialization.");
+        }
     }
 }

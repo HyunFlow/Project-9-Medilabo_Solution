@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,17 +24,22 @@ public class AuthenticationController {
     Generates Token. Requested from the Front application passing across the gateway when the client send
     the correct credentials (username + password on login page).
     */
-
     @PostMapping
     public ResponseEntity<String> generateToken(@RequestBody AuthenticationRequest authRequest) {
         log.info("Token generation for username: " + authRequest.getUsername());
-        if (authManager.authenticate(new UsernamePasswordAuthenticationToken(
-                authRequest.getUsername(),
-                authRequest.getPassword()))
-                .isAuthenticated()) {
-            return ResponseEntity.ok(authenticationService.generateToken(authRequest.getUsername()));
-        } else {
-            throw new RuntimeException("User invalid access ");
+        try{
+            authManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    authRequest.getUsername(),
+                    authRequest.getPassword()
+            ));
+            String token = authenticationService.generateToken(authRequest.getUsername());
+            return ResponseEntity.ok(token);
+        } catch (BadCredentialsException e) {
+            log.warn("Authentication failed for user: " + authRequest.getUsername());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        } catch (Exception e) {
+            log.error("Authentication error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Authentication error");
         }
     }
 

@@ -13,3 +13,13 @@ spring:
               uri: http://patient-service-container:8090
               predicates:
                 - Path=/patient-service/**
+
+            - id: authentication-service-route
+              uri: http://authentication-service-container:8085
+              predicates:
+                  - Path=/authentication/**
+management:
+  endpoint:
+    web:
+      exposure:
+        include: health
