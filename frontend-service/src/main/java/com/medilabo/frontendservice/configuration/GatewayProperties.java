@@ -24,4 +24,7 @@ public class GatewayProperties {
     @Value("${patient-service-uri}/delete")
     private String patientDeleteUri;
 
+    // authentication service URI
+    @Value("${authentication-service-uri}")
+    private String getAuthenticationUri;
 }

@@ -72,7 +72,9 @@ public class PatientController {
             model.addAttribute(ERROR_ATTRIBUTE, ERROR_PATIENT_UPDATE);
             return "patientUpdate";
         }
-        return "redirect:/patients";
+        model.addAttribute(MESSAGE_ATTRIBUTE, SUCCESS_PATIENT_UPDATE);
+        model.addAttribute("patient", modifiedPatient);
+        return "patientView";
     }
 
     @GetMapping("/create")
@@ -109,6 +111,8 @@ public class PatientController {
             log.warn("Patient deletion failed for id: " + id);
             model.addAttribute(ERROR_ATTRIBUTE, ERROR_PATIENT_DELETE);
         }
-        return "redirect:/patients";
+        model.addAttribute(MESSAGE_ATTRIBUTE, SUCCESS_PATIENT_DELETE);
+        model.addAttribute("patients", patientService.getAllPatients());
+        return "patientsList";
     }
 }

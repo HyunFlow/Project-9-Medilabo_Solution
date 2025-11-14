@@ -2,6 +2,7 @@ package com.medilabo.frontendservice.proxy;
 
 import com.medilabo.frontendservice.configuration.GatewayProperties;
 import com.medilabo.frontendservice.dto.PatientDTO;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -14,11 +15,8 @@ public class PatientProxy {
 
     private final GatewayProperties routes;
     private final RestTemplate restTemplate;
-    private final HttpHeaders headers = new HttpHeaders() {{
-        setContentType(MediaType.APPLICATION_JSON);
-    }};
 
-    public PatientProxy(RestTemplate restTemplate, GatewayProperties routes) {
+    public PatientProxy(@Qualifier("authRestTemplate") RestTemplate restTemplate, GatewayProperties routes) {
         this.restTemplate = restTemplate;
         this.routes = routes;
     }
@@ -44,7 +42,7 @@ public class PatientProxy {
     }
 
     public PatientDTO createPatient(PatientDTO patientDTO) {
-        HttpEntity<PatientDTO> requestEntity = new HttpEntity<>(patientDTO, headers);
+        HttpEntity<PatientDTO> requestEntity = new HttpEntity<>(patientDTO);
 
         ResponseEntity<PatientDTO> response = restTemplate.exchange(
                 routes.getPatientCreationUri(),
@@ -56,7 +54,7 @@ public class PatientProxy {
     }
 
     public PatientDTO updatePatient(PatientDTO patientDTO, Integer id) {
-        HttpEntity<PatientDTO> requestEntity = new HttpEntity<>(patientDTO, headers);
+        HttpEntity<PatientDTO> requestEntity = new HttpEntity<>(patientDTO);
 
         ResponseEntity<PatientDTO> response = restTemplate.exchange(
                 routes.getPatientUpdateUri()+"/"+id,
