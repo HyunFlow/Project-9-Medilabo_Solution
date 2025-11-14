@@ -4,10 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MedicalRecordApplication {
+public class NoteServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MedicalRecordApplication.class, args);
+		SpringApplication.run(NoteServiceApplication.class, args);
 	}
-
 }
