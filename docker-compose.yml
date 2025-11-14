@@ -1,20 +1,25 @@
 services:
   postgres:
     image: postgres:latest
-    restart: always
+    restart: unless-stopped
     container_name: postgres-db-container
-    volumes:
-      - postgres:/var/lib/postgresql
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres:/var/lib/postgresql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   patient-service:
-    depends_on:
-      - postgres
+    build: ./patient-service
     image: patient-service:0.0.1
     container_name: patient-service-container
     ports:
@@ -24,8 +29,41 @@ services:
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  authentication-service:
+    build: ./authentication-service
+    image: authentication-service:0.0.1
+    container_name: authentication-service-container
+    restart: unless-stopped
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_AUTH_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SERVER_PORT: 8085
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8085/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   gateway-service:
+    build: ./gateway-service
     image: gateway-service:0.0.1
     container_name: gateway-service-container
     restart: unless-stopped
@@ -34,7 +72,29 @@ services:
     environment:
       SPRING_APPLICATION_NAME: gateway-service
     depends_on:
-      - patient-service
+      patient-service:
+        condition: service_healthy
+      authentication-service:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend-service:
+    build: ./frontend-service
+    image: frontend-service:0.0.1
+    container_name: frontend-service-container
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    environment:
+      SERVER_PORT: 8082
+      GATEWAY_URL: http://gateway-service-container:8081
+    depends_on:
+      gateway-service:
+        condition: service_healthy
 
 volumes:
   postgres:
