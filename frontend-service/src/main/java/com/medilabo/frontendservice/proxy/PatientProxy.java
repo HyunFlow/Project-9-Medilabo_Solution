@@ -23,7 +23,7 @@ public class PatientProxy {
 
     public List<PatientDTO> getAllPatients() {
         ResponseEntity<List<PatientDTO>> response = restTemplate.exchange(
-                routes.getAllPatientsUri(),
+                routes.getPatientUri(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<PatientDTO>>() {}
@@ -45,7 +45,7 @@ public class PatientProxy {
         HttpEntity<PatientDTO> requestEntity = new HttpEntity<>(patientDTO);
 
         ResponseEntity<PatientDTO> response = restTemplate.exchange(
-                routes.getPatientCreationUri(),
+                routes.getPatientUri(),
                 HttpMethod.POST,
                 requestEntity,
                 new ParameterizedTypeReference<PatientDTO>() {}
@@ -57,7 +57,7 @@ public class PatientProxy {
         HttpEntity<PatientDTO> requestEntity = new HttpEntity<>(patientDTO);
 
         ResponseEntity<PatientDTO> response = restTemplate.exchange(
-                routes.getPatientUpdateUri()+"/"+id,
+                routes.getPatientUri()+"/"+id,
                 HttpMethod.PUT,
                 requestEntity,
                 new ParameterizedTypeReference<PatientDTO>() {}
@@ -67,7 +67,7 @@ public class PatientProxy {
 
     public Boolean deletePatient(Integer id) {
         ResponseEntity<Boolean> response = restTemplate.exchange(
-                routes.getPatientDeleteUri()+"/"+id,
+                routes.getPatientUri()+"/"+id,
                 HttpMethod.DELETE,
                 null,
                 new ParameterizedTypeReference<>() {}
