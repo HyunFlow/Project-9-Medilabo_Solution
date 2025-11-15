@@ -13,8 +13,7 @@ public class RouteValidator {
     public static final List<String> openApiEndpoints = List.of(
             "/authentication",
             "/authentication/validate",
-            "/frontend-service",
-            "/patients"
+            "/frontend-service"
     );
 
     // Verification method if the request URI is included on the oneApiEndpoints
