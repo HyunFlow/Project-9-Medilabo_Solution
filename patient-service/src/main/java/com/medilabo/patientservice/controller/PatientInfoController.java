@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
-@RequestMapping("/patient-service")
+@RequestMapping("/patients")
 public class PatientInfoController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class PatientInfoController {
         this.patientInfoService = patientInfoService;
     }
 
-    @GetMapping("/patients")
+    @GetMapping
     public ResponseEntity<List<PatientDTO>> getAllPatients() {
         List<PatientDTO> patientDTOs = patientInfoService.getAllPatients();
         if (patientDTOs.isEmpty()) {
@@ -33,7 +33,7 @@ public class PatientInfoController {
         return ResponseEntity.status(HttpStatus.OK).body(patientDTOs);
     }
 
-    @GetMapping("/patient/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<PatientDTO> getPatientById(@PathVariable Integer id) {
         PatientDTO patient = patientInfoService.getPatientById(id);
         if (patient == null) {
@@ -45,7 +45,7 @@ public class PatientInfoController {
         }
     }
 
-    @PostMapping("/new")
+    @PostMapping
     public ResponseEntity<PatientDTO> addNewPatient(@RequestBody PatientDTO req) {
         PatientDTO result = patientInfoService.addPatient(req);
         if (result != null) {
@@ -54,7 +54,7 @@ public class PatientInfoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<PatientDTO> updatePatient(@PathVariable("id") Integer id,
         @RequestBody PatientDTO req) {
         PatientDTO result = patientInfoService.updatePatient(id, req);
@@ -64,7 +64,7 @@ public class PatientInfoController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deletePatient(@PathVariable("id") Integer id) {
         Boolean result = patientInfoService.deletePatient(id);
         if (result) {
