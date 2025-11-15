@@ -14,9 +14,11 @@ import java.util.List;
 public class PatientProxy {
 
     private final GatewayProperties routes;
+
+    @Qualifier("authRestTemplate")
     private final RestTemplate restTemplate;
 
-    public PatientProxy(@Qualifier("authRestTemplate") RestTemplate restTemplate, GatewayProperties routes) {
+    public PatientProxy(RestTemplate restTemplate, GatewayProperties routes) {
         this.restTemplate = restTemplate;
         this.routes = routes;
     }
