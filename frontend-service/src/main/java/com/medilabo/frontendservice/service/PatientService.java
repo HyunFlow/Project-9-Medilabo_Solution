@@ -18,7 +18,7 @@ public class PatientService {
         return patientProxy.getAllPatients();
     }
 
-    public PatientDTO getPatientById(int id) {
+    public PatientDTO getPatientById(Integer id) {
         return patientProxy.getPatientById(id);
     }
 

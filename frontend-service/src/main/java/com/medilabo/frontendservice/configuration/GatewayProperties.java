@@ -10,9 +10,12 @@ public class GatewayProperties {
 
     // patient service URI
     @Value("${patient-service-uri}")
-    private String PatientUri;
+    private String patientUri;
 
     // authentication service URI
     @Value("${authentication-service-uri}")
-    private String getAuthenticationUri;
+    private String authenticationUri;
+
+    @Value("${note-service-uri}")
+    private String noteUri;
 }

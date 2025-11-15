@@ -32,7 +32,7 @@ public class LoginController {
     @PostMapping("/loginPage")
     public String doLogin(@ModelAttribute LoginFormDTO loginForm, HttpServletRequest request) {
         log.info("Processing login for username: {}", loginForm.getUsername());
-        String accessToken = restTemplate.postForObject(gatewayProperties.getGetAuthenticationUri(), loginForm, String.class);
+        String accessToken = restTemplate.postForObject(gatewayProperties.getAuthenticationUri(), loginForm, String.class);
         log.info("Access Token Generated: {}", accessToken);
         HttpSession session = request.getSession();
         assert accessToken != null;

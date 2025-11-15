@@ -1,5 +1,6 @@
 package com.medilabo.frontendservice.controller;
 import com.medilabo.frontendservice.dto.PatientDTO;
+import com.medilabo.frontendservice.service.NoteService;
 import com.medilabo.frontendservice.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +19,11 @@ import static com.medilabo.frontendservice.constant.MessageConstant.*;
 @RequestMapping("/patients")
 public class PatientController {
     private final PatientService patientService;
+    private final NoteService noteService;
 
-    public PatientController(PatientService patientService) {
+    public PatientController(PatientService patientService, NoteService noteService) {
         this.patientService = patientService;
+        this.noteService = noteService;
     }
 
     @GetMapping("/view")
@@ -34,6 +37,8 @@ public class PatientController {
             return "patientsList";
         }
         model.addAttribute("patient", patient);
+        model.addAttribute("notes", noteService.getAllNotesByPatId(id));
+        model.addAttribute("risk", "N/A");
         return "patientView";
     }
 
