@@ -29,9 +29,9 @@ public class NoteController {
         return ResponseEntity.status(HttpStatus.OK).body(note);
     }
 
-    @GetMapping("/patient/{padId}")
-    public ResponseEntity<List<Note>> getNoteByPatientId(@PathVariable("padId") Integer padId) {
-        List<Note> notes = noteService.getByPatientId(padId);
+    @GetMapping("/patient/{patId}")
+    public ResponseEntity<List<Note>> getNoteByPatientId(@PathVariable("patId") Integer patId) {
+        List<Note> notes = noteService.getByPatientId(patId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(notes);
     }
 
