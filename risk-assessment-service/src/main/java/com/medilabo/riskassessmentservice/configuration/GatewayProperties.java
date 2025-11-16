@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class GatewayProperties {
-    @Value("${patient-service-uri}")
+    @Value("${patient-service-uri}/patients")
     private String patientUri;
 
-    @Value("${note-service-uri}")
+    @Value("${note-service-uri}/notes")
     private String notesUri;
 }

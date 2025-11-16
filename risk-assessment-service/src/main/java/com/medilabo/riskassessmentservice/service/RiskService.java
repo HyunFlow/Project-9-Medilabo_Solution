@@ -2,90 +2,61 @@ package com.medilabo.riskassessmentservice.service;
 
 import com.medilabo.riskassessmentservice.model.NoteDTO;
 import com.medilabo.riskassessmentservice.model.PatientDTO;
-import com.medilabo.riskassessmentservice.model.RiskLevel;
-import com.medilabo.riskassessmentservice.model.RiskResultDTO;
-import com.medilabo.riskassessmentservice.proxy.NoteProxy;
-import com.medilabo.riskassessmentservice.proxy.PatientProxy;
+import com.medilabo.riskassessmentservice.model.TriggerEnumeration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import static com.medilabo.riskassessmentservice.model.RiskLevelEnumeration.*;
 
 @Service
 @RequiredArgsConstructor
 public class RiskService {
 
-    private final PatientProxy patientProxy;
-    private final NoteProxy noteProxy;
-    private final TriggerProvider triggerProvider;
+    private final NoteService noteService;
+    private final PatientService patientService;
 
-    public RiskResultDTO assess(Integer patId) {
-        PatientDTO patient = patientProxy.getPatientById(patId);
-        if (patient == null) {
-            return new RiskResultDTO(patId, null, null, -1, 0, RiskLevel.UNDEFINED);
-        }
+    public String riskEvaluation(Integer patId) {
+        // Retrieve information from sub-applications
+        PatientDTO patient = patientService.getPatientId(patId);
+        List<NoteDTO> notes = noteService.getNotesByPatId(patId);
+
+        // verify integrity of the required information
+        if (patient == null || notes == null) {return null;}
         int age = patient.getAge();
+        if (age == -1) {return null;}
         char gender = patient.getGenderChar();
+        if (gender != 'M' && gender != 'F') {return null;}
 
-        if (age < 0 || gender != 'M' && gender != 'F') {
-            return new RiskResultDTO(patId, patient.getFirstName(), patient.getLastName(), age, 0, RiskLevel.UNDEFINED);
-        }
+        // read notes and count triggers
+        int triggerCount = triggerCount(notes);
 
-        List<NoteDTO> notes = noteProxy.getNotesByPatId(patId);
+        // Apply logics to define the Risk level
+        if      (gender == 'M' && age < 30 && triggerCount == 3)        {return IN_DANGER;}
+        else if (gender == 'F' && age < 30 && triggerCount == 4)        {return IN_DANGER;}
+        else if (age >= 30 && (triggerCount == 6 || triggerCount == 7)) {return IN_DANGER;}
 
-        String allText = "";
-        if (notes != null && !notes.isEmpty()) {
-            allText = notes.stream()
-                    .map(NoteDTO::getContent)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.joining(" "));
-        }
+        else if (age >= 30 && triggerCount >= 2 && triggerCount <= 5)   {return BORDERLINE;}
 
-        int triggerCount = triggerProvider.countTriggers(allText);
-        RiskLevel level = evaluateRisk(age, gender, triggerCount);
+        else if (gender == 'M' && age < 30 && triggerCount >= 5)        {return EARLY_ONSET;}
+        else if (gender == 'F' && age < 30 && triggerCount >= 7)        {return EARLY_ONSET;}
+        else if (age >= 30 && (triggerCount >= 7))                      {return EARLY_ONSET;}
 
-        return new RiskResultDTO(patId, patient.getFirstName(), patient.getLastName(), age, triggerCount, level);
+        else if (triggerCount == 0)                                     {return NONE;}
+
+        else                                                            {return UNDEFINED;}
     }
 
-    private RiskLevel evaluateRisk(int age, char gender, int triggerCount) {
-        boolean male = (gender == 'M');
-        boolean female = (gender == 'F');
-
-        if (triggerCount == 0) {
-            return RiskLevel.NONE;
-        }
-
-        if (age >= 30) {
-            if (triggerCount >= 2 && triggerCount <= 5) {
-                return RiskLevel.BORDERLINE;
-            } else if (triggerCount >= 6 && triggerCount <= 7) {
-                return RiskLevel.IN_DANGER;
-            } else if (triggerCount >= 8) {
-                return RiskLevel.EARLY_ONSET;
+    public int triggerCount(List<NoteDTO> notes) {
+        int count = 0;
+        for (NoteDTO note : notes) {
+            for (TriggerEnumeration trigger : TriggerEnumeration.values()) {
+                // set both notes and triggers to lower cases to avoid any miss-matches
+                if (note.getContent().toLowerCase().contains(trigger.getValue().toLowerCase())) {
+                    count++;
+                }
             }
-            return RiskLevel.NONE;
         }
-
-        if (male) {
-            if (triggerCount >= 3 && triggerCount < 5) {
-                return RiskLevel.IN_DANGER;
-            } else if (triggerCount >= 5) {
-                return RiskLevel.EARLY_ONSET;
-            }
-            return RiskLevel.NONE;
-        }
-
-        if (female) {
-            if (triggerCount >= 4 && triggerCount < 7) {
-                return RiskLevel.IN_DANGER;
-            } else if (triggerCount >= 7) {
-                return RiskLevel.EARLY_ONSET;
-            }
-            return RiskLevel.NONE;
-        }
-        return RiskLevel.UNDEFINED;
+        return count;
     }
-
 }
