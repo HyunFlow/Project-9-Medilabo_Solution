@@ -4,6 +4,7 @@ import com.medilabo.frontendservice.dto.NoteDTO;
 import com.medilabo.frontendservice.dto.PatientDTO;
 import com.medilabo.frontendservice.service.NoteService;
 import com.medilabo.frontendservice.service.PatientService;
+import com.medilabo.frontendservice.service.RiskService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -20,10 +21,12 @@ import static com.medilabo.frontendservice.constant.MessageConstant.*;
 public class NoteController {
     private final NoteService  noteService;
     private final PatientService patientService;
+    private final RiskService riskService;
 
-    public NoteController(NoteService noteService, PatientService patientService) {
+    public NoteController(NoteService noteService, PatientService patientService, RiskService riskService) {
         this.noteService = noteService;
         this.patientService = patientService;
+        this.riskService = riskService;
     }
 
     @GetMapping("/create")
@@ -60,18 +63,27 @@ public class NoteController {
             return "noteCreate";
         }
 
-        Integer padId = note.getPatId();
-        PatientDTO patient = patientService.getPatientById(padId);
+        Integer patId = note.getPatId();
+        PatientDTO patient = patientService.getPatientById(patId);
         if (patient == null) {
-            log.error("Patient ID {} is null", padId);
+            log.error("Patient ID {} is null", patId);
             model.addAttribute(ERROR_ATTRIBUTE, ERROR_PATIENT_NOT_FOUND);
             model.addAttribute("patients", patientService.getAllPatients());
             return "patientsList";
         }
 
+        String risk = riskService.getRiskLevelForPatientId(patId);
+        if (risk == null) {
+            log.error("Risk level for Patient ID {} is null", patId);
+            model.addAttribute(ERROR_ATTRIBUTE, ERROR_RISK);
+            model.addAttribute("risk", UNAVAILABLE);
+        } else {
+            model.addAttribute("risk", risk);
+        }
+
         model.addAttribute(MESSAGE_ATTRIBUTE, SUCCESS_NOTE_CREATE);
         model.addAttribute("patient",  patient);
-        model.addAttribute("notes",  noteService.getAllNotesByPatId(padId));
+        model.addAttribute("notes",  noteService.getAllNotesByPatId(patId));
 
         return "patientView";
     }
@@ -94,21 +106,32 @@ public class NoteController {
         }
 
         NoteDTO modifiedNote = noteService.updateNote(note, id);
+        Integer patId;
+
         if (modifiedNote == null) {
             log.error("Note ID {} is null", id);
             model.addAttribute(ERROR_ATTRIBUTE, ERROR_NOTE_UPDATE);
+            patId = note.getPatId();
         } else {
             model.addAttribute(MESSAGE_ATTRIBUTE, SUCCESS_NOTE_UPDATE);
+            patId = modifiedNote.getPatId();
         }
 
-        Integer patId = note.getPatId();
+        String risk = riskService.getRiskLevelForPatientId(patId);
+        if (risk == null) {
+            model.addAttribute(ERROR_ATTRIBUTE, ERROR_RISK);
+            model.addAttribute("risk", UNAVAILABLE);
+        } else {
+            model.addAttribute("risk", risk);
+        }
+
         model.addAttribute("patient",  patientService.getPatientById(patId));
         model.addAttribute("notes",  noteService.getAllNotesByPatId(patId));
         return "patientView";
     }
 
     @GetMapping("/delete")
-    public String deleteNote(@Valid @ModelAttribute("id") String id, @RequestParam("patId") Integer patId, Model model) {
+    public String deleteNote(@RequestParam("id") String id, @RequestParam("patId") Integer patId, Model model) {
         if (noteService.deleteNote(id)) {
             log.info("Note ID {} is deleted", id);
             model.addAttribute(MESSAGE_ATTRIBUTE, SUCCESS_NOTE_DELETE);

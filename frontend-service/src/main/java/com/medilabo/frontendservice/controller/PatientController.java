@@ -1,7 +1,9 @@
 package com.medilabo.frontendservice.controller;
+import com.medilabo.frontendservice.dto.NoteDTO;
 import com.medilabo.frontendservice.dto.PatientDTO;
 import com.medilabo.frontendservice.service.NoteService;
 import com.medilabo.frontendservice.service.PatientService;
+import com.medilabo.frontendservice.service.RiskService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -20,10 +22,12 @@ import static com.medilabo.frontendservice.constant.MessageConstant.*;
 public class PatientController {
     private final PatientService patientService;
     private final NoteService noteService;
+    private final RiskService riskService;
 
-    public PatientController(PatientService patientService, NoteService noteService) {
+    public PatientController(PatientService patientService, NoteService noteService,  RiskService riskService) {
         this.patientService = patientService;
         this.noteService = noteService;
+        this.riskService = riskService;
     }
 
     @GetMapping("/view")
@@ -31,14 +35,29 @@ public class PatientController {
         PatientDTO patient = patientService.getPatientById(id);
 
         if (patient == null) {
-            log.warn("Patient not found for id: "+ id);
+            log.warn("Patient not found for id: {}", id);
             model.addAttribute(ERROR_ATTRIBUTE, ERROR_PATIENT_NOT_FOUND);
             model.addAttribute("patients", patientService.getAllPatients());
             return "patientsList";
         }
         model.addAttribute("patient", patient);
-        model.addAttribute("notes", noteService.getAllNotesByPatId(id));
-        model.addAttribute("risk", "N/A");
+
+        String risk = riskService.getRiskLevelForPatientId(patient.getId());
+        if (risk == null) {
+            log.warn("Risk Patient id {} is null",id);
+            model.addAttribute(ERROR_ATTRIBUTE, ERROR_RISK);
+            model.addAttribute("risk", UNAVAILABLE);
+        } else {
+            model.addAttribute("risk", risk);
+        }
+
+        List<NoteDTO> notes = noteService.getAllNotesByPatId(patient.getId());
+        if (notes == null) {
+            log.warn("Notes not found for id: {}", id);
+            model.addAttribute(ERROR_ATTRIBUTE, ERROR_NOTE_NOT_FOUND);
+        } else {
+            model.addAttribute("notes", notes);
+        }
         return "patientView";
     }
 
@@ -54,7 +73,7 @@ public class PatientController {
         PatientDTO patient = patientService.getPatientById(id);
 
         if (patient == null) {
-            log.warn("Patient not found for id: "+ id);
+            log.warn("Patient not found for id: {}", id);
             model.addAttribute(ERROR_ATTRIBUTE, ERROR_PATIENT_NOT_FOUND);
             model.addAttribute("patients", patientService.getAllPatients());
             return "patientsList";
@@ -73,9 +92,26 @@ public class PatientController {
         PatientDTO modifiedPatient = patientService.updatePatient(patient, patient.getId());
 
         if (modifiedPatient == null) {
-            log.warn("Patient update failed for id: "+ patient.getId());
+            log.warn("Patient update failed for id: {}", patient.getId());
             model.addAttribute(ERROR_ATTRIBUTE, ERROR_PATIENT_UPDATE);
             return "patientUpdate";
+        }
+
+        Integer patId = patient.getId();
+        List<NoteDTO> notes = noteService.getAllNotesByPatId(patId);
+        if (notes == null) {
+            log.warn("Notes not found for Patient id: {}", patient.getId());
+            model.addAttribute(ERROR_ATTRIBUTE, ERROR_NOTE_NOT_FOUND);
+            model.addAttribute("risk", UNAVAILABLE);
+        } else {
+            model.addAttribute("notes", notes);
+            String risk = riskService.getRiskLevelForPatientId(patId);
+            if (risk == null) {
+                model.addAttribute(ERROR_ATTRIBUTE, ERROR_RISK);
+                model.addAttribute("risk", UNAVAILABLE);
+            } else {
+                model.addAttribute("risk", risk);
+            }
         }
         model.addAttribute(MESSAGE_ATTRIBUTE, SUCCESS_PATIENT_UPDATE);
         model.addAttribute("patient", modifiedPatient);
@@ -102,9 +138,10 @@ public class PatientController {
             model.addAttribute(ERROR_ATTRIBUTE, ERROR_PATIENT_CREATE);
             return "patientCreate";
         }
-
         model.addAttribute(MESSAGE_ATTRIBUTE, SUCCESS_PATIENT_CREATE);
-        return "redirect:/patients/view?id=" + createdPatient.getId();
+        model.addAttribute("patient", createdPatient);
+        model.addAttribute("risk", "None");
+        return "patientView";
     }
 
     @GetMapping("/delete")
@@ -113,7 +150,7 @@ public class PatientController {
         Boolean success = patientService.deletePatient(id);
 
         if(success == null || !success) {
-            log.warn("Patient deletion failed for id: " + id);
+            log.warn("Patient deletion failed for id: {}", id);
             model.addAttribute(ERROR_ATTRIBUTE, ERROR_PATIENT_DELETE);
         }
         model.addAttribute(MESSAGE_ATTRIBUTE, SUCCESS_PATIENT_DELETE);

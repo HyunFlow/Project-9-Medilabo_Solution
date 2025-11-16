@@ -18,4 +18,7 @@ public class GatewayProperties {
 
     @Value("${note-service-uri}")
     private String noteUri;
+
+    @Value("${risk-assessment-service-uri}")
+    private String riskUri;
 }

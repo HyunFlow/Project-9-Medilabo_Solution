@@ -11,6 +11,9 @@ public interface ErrorConstant {
     String ERROR_NOTE_CREATE = "Note could not be created";
     String ERROR_NOTE_UPDATE = "Note could not be updated";
     String ERROR_NOTE_DELETE = "Note could not be deleted";
+    String ERROR_NOTE_NOT_FOUND = "Note could not be found";
+
+    String ERROR_RISK                 = "Risk could not be evaluated at that time";
 
     String UNAVAILABLE = "Unavailable";
 }
