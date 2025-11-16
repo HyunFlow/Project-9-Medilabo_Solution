@@ -34,7 +34,7 @@ public class GatewayConfig {
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("authentication-login", r -> r
+                .route("authentication-service-route", r -> r
                         .path("/authentication")
                         .uri(authenticationUri)
                 )
