@@ -12,8 +12,7 @@ public class RouteValidator {
     // List of open route without authentication
     public static final List<String> openApiEndpoints = List.of(
             "/authentication",
-            "/authentication/validate",
-            "/frontend-service"
+            "/authentication/validate"
     );
 
     // Verification method if the request URI is included on the oneApiEndpoints

@@ -6,7 +6,6 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class GatewayConfig {
@@ -17,11 +16,14 @@ public class GatewayConfig {
     @Value("${note-service-uri}")
     private String noteUri;
 
-//    @Value("${risk-service-uri")
-//    private String riskUri;
+    @Value("${risk-assessment-service-uri}")
+    private String riskUri;
 
     @Value("${authentication-service-uri}")
     private String authenticationUri;
+
+    @Value("${frontend-service-uri}")
+    private String frontendUri;
 
     private final AuthenticationFilter authenticationFilter;
 
@@ -34,7 +36,6 @@ public class GatewayConfig {
         return builder.routes()
                 .route("authentication-login", r -> r
                         .path("/authentication")
-                        .filters(f -> f.filter(authenticationFilter))
                         .uri(authenticationUri)
                 )
                 .route("patient-service-route", r -> r
@@ -46,6 +47,16 @@ public class GatewayConfig {
                         .path("/notes/**")
                         .filters(f -> f.filter(authenticationFilter))
                         .uri(noteUri)
+                )
+                .route("risk-assessment-service-route", r -> r
+                        .path("/risk-assessment/**")
+                        .filters(f -> f.filter(authenticationFilter))
+                        .uri(riskUri)
+                )
+                .route("frontend-service-route", r -> r
+                        .path("/home")
+                        .filters(f -> f.filter(authenticationFilter))
+                        .uri(frontendUri)
                 )
                 .build();
     }
