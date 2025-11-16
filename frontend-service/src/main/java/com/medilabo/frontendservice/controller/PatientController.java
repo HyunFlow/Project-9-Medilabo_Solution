@@ -70,10 +70,10 @@ public class PatientController {
             return "patientUpdate";
         }
 
-        PatientDTO modifiedPatient = patientService.updatePatient(patient, patient.id());
+        PatientDTO modifiedPatient = patientService.updatePatient(patient, patient.getId());
 
         if (modifiedPatient == null) {
-            log.warn("Patient update failed for id: "+ patient.id());
+            log.warn("Patient update failed for id: "+ patient.getId());
             model.addAttribute(ERROR_ATTRIBUTE, ERROR_PATIENT_UPDATE);
             return "patientUpdate";
         }
@@ -104,7 +104,7 @@ public class PatientController {
         }
 
         model.addAttribute(MESSAGE_ATTRIBUTE, SUCCESS_PATIENT_CREATE);
-        return "redirect:/patients/view?id=" + createdPatient.id();
+        return "redirect:/patients/view?id=" + createdPatient.getId();
     }
 
     @GetMapping("/delete")

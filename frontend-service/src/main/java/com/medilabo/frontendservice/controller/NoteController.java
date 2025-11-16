@@ -38,7 +38,7 @@ public class NoteController {
 
         NoteDTO note = new NoteDTO();
         note.setPatId(patId);
-        note.setPatient(patient.firstName() + " " + patient.lastName());
+        note.setPatient(patient.getFirstName() + " " + patient.getLastName());
         note.setContent("");
 
         model.addAttribute("note", note);
