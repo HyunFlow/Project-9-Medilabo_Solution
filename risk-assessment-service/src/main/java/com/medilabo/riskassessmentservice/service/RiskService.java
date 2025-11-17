@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.Normalizer;
 import java.util.List;
+
 import static com.medilabo.riskassessmentservice.model.RiskLevelEnumeration.*;
 
 @Service
@@ -42,28 +43,40 @@ public class RiskService {
         if (triggerCount == 0) {
             return NONE;
         }
-        if (age > 30 && triggerCount >= 2 && triggerCount <= 5) {
-            return BORDERLINE;
+
+        if (age >= 30) {
+            if (triggerCount >= 2 && triggerCount <= 5) {
+                return BORDERLINE;
+            }
+            if (triggerCount == 1) {
+                return NONE;
+            }
+            if (triggerCount == 6 || triggerCount == 7) {
+                return IN_DANGER;
+            }
+            if (triggerCount >= 8) {
+                return EARLY_ONSET;
+            }
+            return UNDEFINED;
+
+            if (gender == 'M') {
+                if (triggerCount >= 5) {
+                    return EARLY_ONSET;
+                }
+                if (triggerCount >= 3) {
+                    return IN_DANGER;
+                }
+                return NONE;
+            } else {
+                if (triggerCount >= 7) {
+                    return EARLY_ONSET;
+                }
+                if (triggerCount >= 4) {
+                    return IN_DANGER;
+                }
+                return NONE;
+            }
         }
-        if (gender == 'M' && age < 30 && triggerCount == 3) {
-            return IN_DANGER;
-        }
-        if (gender == 'F' && age < 30 && triggerCount == 4) {
-            return IN_DANGER;
-        }
-        if (age > 30 && (triggerCount == 6 || triggerCount == 7)) {
-            return IN_DANGER;
-        }
-        if (gender == 'M' && age < 30 && triggerCount >= 5) {
-            return EARLY_ONSET;
-        }
-        if (gender == 'F' && age < 30 && triggerCount >= 7) {
-            return EARLY_ONSET;
-        }
-        if (age > 30 && triggerCount >= 8) {
-            return EARLY_ONSET;
-        }
-        return UNDEFINED;
     }
 
     public int triggerCount(List<NoteDTO> notes) {
